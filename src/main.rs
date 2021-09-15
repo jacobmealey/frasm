@@ -97,7 +97,14 @@ fn main() {
 
     if i_format.get(split_line[0]) != None {
         println!("{} is I format", split_line[0]);
-    }else if r_funcs.get(split_line[0]) != None {
+        let opcode: u32 = *i_format.get(split_line[0]).unwrap();
+        let rs: u32 = split_line[1].parse().unwrap();
+        let rt: u32 = split_line[2].parse().unwrap();
+        let imm: u32 = split_line[3].parse().unwrap();
+        let i_form = abstract_op_codes::Immediate::new(opcode, rs, rt, imm);
+        println!("{} --> {:#010x}", line, i_form.as_bin());
+
+    } else if r_funcs.get(split_line[0]) != None {
         if split_line.len() == 4 {
             let func: u32 = *r_funcs.get(split_line[0]).unwrap();
             let rd: u32 = split_line[1].parse().unwrap();
