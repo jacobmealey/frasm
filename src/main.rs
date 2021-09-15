@@ -47,6 +47,46 @@ fn main() {
         ("sdc1", 61),
         ("sdc2", 62)
     ].iter().cloned().collect();
+
+    let r_funcs : HashMap<&str, u32> = [
+        ("ssl", 0),
+        ("srl", 2),
+        ("sra", 3),
+        ("sllv", 4),
+        ("srlv", 6),
+        ("srav", 7),
+        ("jr", 8),
+        ("jalr", 9),
+        ("movz", 10),
+        ("movn", 11),
+        ("syscall", 12),
+        ("break", 13),
+        ("sync", 15),
+        ("mfhi", 16),
+        ("mthi", 17),
+        ("mflo", 18),
+        ("mtlo", 19),
+        ("mult", 24),
+        ("multu", 25),
+        ("div", 26),
+        ("divu", 27),
+        ("add", 32),
+        ("addu", 33),
+        ("div", 34),
+        ("divu", 35),
+        ("and", 36),
+        ("or", 37),
+        ("xor", 38),
+        ("nor", 39),
+        ("slt", 42),
+        ("sltu", 43),
+        ("tge", 48),
+        ("tgeu", 49),
+        ("tlt", 50),
+        ("tltu", 51),
+        ("teq", 52),
+        ("tne", 54)
+    ].iter().cloned().collect();
     println!("Hello, world!");
     let reg = abstract_op_codes::Register::new(0, 0, 2, 0, 37);
     let imm = abstract_op_codes::Immediate::new(4, 8, 0, 3);
@@ -55,4 +95,5 @@ fn main() {
     println!("Immediate: {:#010x}", imm.as_bin());
     println!("Jump: {:#010x}", jmp.as_bin());
     println!("{}", opcodes.get("j").unwrap());
+    println!("{}", r_funcs.get("add").unwrap());
 }
