@@ -87,6 +87,26 @@ fn main() {
         ("teq", 52),
         ("tne", 54)
     ].iter().cloned().collect();
+
+    let line = "add 1 2 2";
+
+    let split_line: Vec<&str> = line.split(' ').collect();
+
+    if opcodes.get(split_line[0]) != None {
+        println!("{} is opcode", split_line[0]);
+    }else{
+        println!("{} is R func", split_line[0]);
+        if split_line.len() == 4 {
+            let func: u32 = *r_funcs.get(split_line[0]).unwrap();
+            let rd: u32 = split_line[1].parse().unwrap();
+            let rs: u32 = split_line[2].parse().unwrap();
+            let rt: u32 = split_line[3].parse().unwrap();
+            let reg = abstract_op_codes::Register::new(rs, rt, rd, 0, func);
+            println!("Register: {:#010x}", reg.as_bin());
+        }
+    }
+
+
     println!("Hello, world!");
     let reg = abstract_op_codes::Register::new(0, 0, 2, 0, 37);
     let imm = abstract_op_codes::Immediate::new(4, 8, 0, 3);
