@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+pub mod abstract_op_codes;
 
 pub static I_FORMAT: &'static [(&str, u32)]= &[
     ("addi", 8),
@@ -46,6 +48,8 @@ pub static J_FORMAT: &'static[(&str, u32)] = &[
     ("jal", 3),
 ];
 
+// this is straight up missing subtraction?? 
+// Not sure what number its supposed to be but lol
 pub static R_FUNCS: &'static [(&str, u32)]  = &[
     ("ssl", 0),
     ("srl", 2),
@@ -86,3 +90,40 @@ pub static R_FUNCS: &'static [(&str, u32)]  = &[
     ("tne", 54)
 ];
 
+
+pub fn asm_to_bin(string: &str) -> u32 {
+    let split_line: Vec<&str> = string.split(' ').collect();
+
+    let i_format : HashMap<&str, u32> = I_FORMAT.iter().cloned().collect();
+    let j_format : HashMap<&str, u32> = J_FORMAT.iter().cloned().collect();
+    let r_funcs: HashMap<&str, u32> = R_FUNCS.iter().cloned().collect();
+
+    // Check if split line is an i type op-code
+    if i_format.get(split_line[0]) != None {
+        println!("{} is I format", split_line[0]);
+        let opcode: u32 = *i_format.get(split_line[0]).unwrap();
+        let rs: u32 = split_line[1].parse().unwrap();
+        let rt: u32 = split_line[2].parse().unwrap();
+        let imm: u32 = split_line[3].parse().unwrap();
+        let i_form = abstract_op_codes::Immediate::new(opcode, rs, rt, imm);
+        return i_form.as_bin();
+
+    // check if split_line is and r type op code
+    } else if r_funcs.get(split_line[0]) != None {
+        if split_line.len() == 4 {
+            let func: u32 = *r_funcs.get(split_line[0]).unwrap();
+            let rd: u32 = split_line[1].parse().unwrap();
+            let rs: u32 = split_line[2].parse().unwrap();
+            let rt: u32 = split_line[3].parse().unwrap();
+            let reg = abstract_op_codes::Register::new(rs, rt, rd, 0, func);
+            return reg.as_bin();
+        }
+    // LOL must be J
+    } else if j_format.get(split_line[0]) != None {
+        let opcode: u32 = *j_format.get(split_line[0]).unwrap();
+        let addr: u32 = split_line[1].parse().unwrap();
+        let j_form = abstract_op_codes::Jump::new(opcode, addr);
+        return j_form.as_bin();
+    }
+    return 0
+}

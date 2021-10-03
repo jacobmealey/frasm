@@ -14,6 +14,7 @@
 //  
 //  new() takes a different amount of arguments depending on the op code
 //  and returns the op code as a struct. 
+
 pub struct Register {
     rs : u32,
     rt : u32,
@@ -95,4 +96,3 @@ impl Jump {
         };
     }
 }
-
