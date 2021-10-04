@@ -1,6 +1,9 @@
 use std::collections::HashMap;
 pub mod abstract_op_codes;
 
+pub static ERR_UNKNOWN_OP: i32 = -1;
+pub static ERR_MISMATCH_PARAM_N: i32 = -2;
+
 pub static I_FORMAT: &'static [(&str, u32)]= &[
     ("addi", 8),
     ("addiu", 9),
@@ -91,7 +94,7 @@ pub static R_FUNCS: &'static [(&str, u32)]  = &[
 ];
 
 
-pub fn asm_to_bin(string: &str) -> Result<u32, ()> {
+pub fn asm_to_bin(string: &str) -> Result<u32, i32> {
     let split_line: Vec<&str> = string.split(' ').collect();
 
     let i_format : HashMap<&str, u32> = I_FORMAT.iter().cloned().collect();
@@ -117,7 +120,10 @@ pub fn asm_to_bin(string: &str) -> Result<u32, ()> {
             let rt: u32 = split_line[3].parse().unwrap();
             let reg = abstract_op_codes::Register::new(rs, rt, rd, 0, func);
             return Ok(reg.as_bin());
+        }else{
+            return Err(ERR_MISMATCH_PARAM_N);
         }
+
     // LOL must be J
     } else if j_format.get(split_line[0]) != None {
         let opcode: u32 = *j_format.get(split_line[0]).unwrap();
@@ -125,5 +131,5 @@ pub fn asm_to_bin(string: &str) -> Result<u32, ()> {
         let j_form = abstract_op_codes::Jump::new(opcode, addr);
         return Ok(j_form.as_bin());
     }
-    return Err(());
+    return Err(ERR_UNKNOWN_OP);
 }

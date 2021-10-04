@@ -18,14 +18,18 @@ fn main() {
 
     for line in lines {
         line_count += 1;
-        // most of this should probably put into a function lol
-        let bin_as_line = opcodes::asm_to_bin(line);
 
-        match bin_as_line{
+        let line_as_bin= opcodes::asm_to_bin(line);
+
+        match line_as_bin{
             Ok(bin) => binary.push(bin),
-            Err(_) => {
-                println!("Unknown operator: {} on line {}", line, line_count);
-                std::process::exit(1);
+            Err(e) => {
+                if e == opcodes::ERR_UNKNOWN_OP {
+                    println!("Unknown operator on line {}\n\t {}", line_count, line);
+                    std::process::exit(1);
+                }else if e == opcodes::ERR_MISMATCH_PARAM_N{
+                    println!("Mismatch paramater count on line {}:\n\t {}", line_count, line)
+                }
             }
         }
     }
