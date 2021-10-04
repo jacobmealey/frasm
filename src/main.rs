@@ -21,7 +21,13 @@ fn main() {
         // most of this should probably put into a function lol
         let bin_as_line = opcodes::asm_to_bin(line);
 
-        binary.push(bin_as_line);
+        match bin_as_line{
+            Ok(bin) => binary.push(bin),
+            Err(_) => {
+                println!("Unknown operator: {} on line {}", line, line_count);
+                std::process::exit(1);
+            }
+        }
     }
 
     for bin in binary {

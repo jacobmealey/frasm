@@ -91,7 +91,7 @@ pub static R_FUNCS: &'static [(&str, u32)]  = &[
 ];
 
 
-pub fn asm_to_bin(string: &str) -> u32 {
+pub fn asm_to_bin(string: &str) -> Result<u32, ()> {
     let split_line: Vec<&str> = string.split(' ').collect();
 
     let i_format : HashMap<&str, u32> = I_FORMAT.iter().cloned().collect();
@@ -106,7 +106,7 @@ pub fn asm_to_bin(string: &str) -> u32 {
         let rt: u32 = split_line[2].parse().unwrap();
         let imm: u32 = split_line[3].parse().unwrap();
         let i_form = abstract_op_codes::Immediate::new(opcode, rs, rt, imm);
-        return i_form.as_bin();
+        return Ok(i_form.as_bin());
 
     // check if split_line is and r type op code
     } else if r_funcs.get(split_line[0]) != None {
@@ -116,14 +116,14 @@ pub fn asm_to_bin(string: &str) -> u32 {
             let rs: u32 = split_line[2].parse().unwrap();
             let rt: u32 = split_line[3].parse().unwrap();
             let reg = abstract_op_codes::Register::new(rs, rt, rd, 0, func);
-            return reg.as_bin();
+            return Ok(reg.as_bin());
         }
     // LOL must be J
     } else if j_format.get(split_line[0]) != None {
         let opcode: u32 = *j_format.get(split_line[0]).unwrap();
         let addr: u32 = split_line[1].parse().unwrap();
         let j_form = abstract_op_codes::Jump::new(opcode, addr);
-        return j_form.as_bin();
+        return Ok(j_form.as_bin());
     }
-    return 0
+    return Err(());
 }
