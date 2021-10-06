@@ -28,7 +28,8 @@ fn main() {
                     println!("Unknown operator on line {}\n\t {}", line_count, line);
                     std::process::exit(1);
                 }else if e == opcodes::ERR_MISMATCH_PARAM_N{
-                    println!("Mismatch paramater count on line {}:\n\t {}", line_count, line)
+                    println!("Mismatch paramater count on line {}:\n\t {}", 
+                        line_count, line);
                 }
             }
         }
