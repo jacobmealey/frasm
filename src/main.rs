@@ -16,10 +16,24 @@ fn main() {
     // Traverse through all lines in the file!
     let mut line_count = 0;
 
+    // preprocess pipeline
+    // stage 1 -- filter comments
+    
+    // stage 2 -- convert labels to hex values
+
+    // stage 3 -- convert symbolic registers to integer values (no dollar signs)
+
+    // This is for already processed lines. not lines can have comments
+    // no lines can have symbolic names 
+    // valid lines:
+    //      add 3 2 1
+    // where those are the values of the registers. or in an I type
+    // it would be the calcalated immediate value
+    // invalid lines:
+    //      add $t0 $v1 $v2 ; adding or something
     for line in lines {
         line_count += 1;
-
-        let line_as_bin= opcodes::asm_to_bin(line);
+        let line_as_bin = opcodes::asm_to_bin(line);
 
         match line_as_bin{
             Ok(bin) => binary.push(bin),
@@ -30,6 +44,7 @@ fn main() {
                 }else if e == opcodes::ERR_MISMATCH_PARAM_N{
                     println!("Mismatch paramater count on line {}:\n\t {}", 
                         line_count, line);
+                    std::process::exit(1);
                 }
             }
         }
