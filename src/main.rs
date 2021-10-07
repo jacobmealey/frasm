@@ -2,6 +2,7 @@ mod opcodes;
 
 use std::env;
 use std::fs;
+use std::collections::HashMap;
             
 // macro for checking if a string is blank?
 fn is_blank(string: &str) -> bool {
@@ -29,10 +30,10 @@ fn main() {
     let mut line_count = 0;
 
 
-    let mut post_stage1: Vec<&str> = Vec::new();
     // preprocess pipeline
     // stage 1 -- filter comments and trailing whitespace and newlines
-    for line in lines {
+    let mut post_stage1: Vec<&str> = Vec::new();
+    for line in &lines {
         let split: Vec<&str> = line.split('#').collect();
         if is_blank(split[0]) {                 // empty line
             continue;
@@ -43,11 +44,15 @@ fn main() {
         }
     }  
     
-    for line in &post_stage1 {
-        println!("{}", line);
-    }
     // stage 2 -- convert labels to hex values
-
+    let mut labels: HashMap<&str, u32> = HashMap::new();
+    for line in &post_stage1 {
+        let split: Vec<&str> = line.split(':').collect();
+        println!("{}", split[0]);
+        // Someway of descerning if its a function or not? maybe just 
+        // count the white space because in theory a trimmed label
+        // should have no white space
+    }
     // stage 3 -- convert symbolic registers to integer values (no dollar signs)
 
     // This is for already processed lines. not lines can have comments
