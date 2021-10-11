@@ -1,8 +1,10 @@
+extern crate regex;
 mod opcodes;
 
 use std::env;
 use std::fs;
 use std::collections::HashMap;
+use regex::Regex;
             
 // macro for checking if a string is blank?
 fn is_blank(string: &str) -> bool {
@@ -45,13 +47,32 @@ fn main() {
     }  
     
     // stage 2 -- convert labels to hex values
+    let mut post_stage2: Vec<&str> = Vec::new();
     let mut labels: HashMap<&str, u32> = HashMap::new();
     for line in &post_stage1 {
         let split: Vec<&str> = line.split(':').collect();
-        println!("{}", split[0]);
+        line_count = line_count + 1;
+        if split.len() > 1 {
+            labels.insert(split[0].trim(), line_count);
+            post_stage2.push(split[1]);
+        } else {
+            post_stage2.push(split[0]);
+        }
+
         // Someway of descerning if its a function or not? maybe just 
         // count the white space because in theory a trimmed label
         // should have no white space
+    }
+    
+    println!("post_stage2 len: {}", post_stage2.len());
+    println!("label count: {}", labels.keys().len());
+
+    for label in labels.keys() {
+        let rg = Regex::new(&format!(r"{}", label)).unwrap();
+        for lines in &post_stage2 {
+            println!("{} -> {}", lines, rg.replace(lines, labels[label].to_string()));
+        }
+       
     }
     // stage 3 -- convert symbolic registers to integer values (no dollar signs)
 
@@ -63,7 +84,7 @@ fn main() {
     // it would be the calcalated immediate value
     // invalid lines:
     //      add $t0 $v1 $v2 # adding or something
-    for line in post_stage1{
+    for line in post_stage2{
         line_count += 1;
         let line_as_bin = opcodes::asm_to_bin(line);
 
