@@ -46,7 +46,7 @@ fn main() {
         }
     }  
     
-    // stage 2 -- convert labels to hex values
+    // stage 2 -- generate list of labels 
     let mut post_stage2: Vec<&str> = Vec::new();
     let mut labels: HashMap<&str, u32> = HashMap::new();
     for line in &post_stage1 {
@@ -54,9 +54,9 @@ fn main() {
         line_count = line_count + 1;
         if split.len() > 1 {
             labels.insert(split[0].trim(), line_count);
-            post_stage2.push(split[1]);
+            post_stage2.push(split[1].trim());
         } else {
-            post_stage2.push(split[0]);
+            post_stage2.push(split[0].trim());
         }
 
         // Someway of descerning if its a function or not? maybe just 
@@ -67,13 +67,21 @@ fn main() {
     println!("post_stage2 len: {}", post_stage2.len());
     println!("label count: {}", labels.keys().len());
 
+    let mut stage_2_post_labels: Vec<String> = Vec::new();
     for label in labels.keys() {
         let rg = Regex::new(&format!(r"{}", label)).unwrap();
+        let mut replaced_line: String;
         for lines in &post_stage2 {
-            println!("{} -> {}", lines, rg.replace(lines, labels[label].to_string()));
+            // does this replace the actual line in the array or a copy of it?
+            replaced_line = rg.replace(lines, labels[label].to_string()).to_string();
+            println!("{}", replaced_line);
+            stage_2_post_labels.push(replaced_line);
         }
-       
     }
+
+    //for line in &post_stage2 {
+    //    println!("{}", line);
+    //}
     // stage 3 -- convert symbolic registers to integer values (no dollar signs)
 
     // This is for already processed lines. not lines can have comments
@@ -84,9 +92,9 @@ fn main() {
     // it would be the calcalated immediate value
     // invalid lines:
     //      add $t0 $v1 $v2 # adding or something
-    for line in post_stage2{
+    for line in stage_2_post_labels{
         line_count += 1;
-        let line_as_bin = opcodes::asm_to_bin(line);
+        let line_as_bin = opcodes::asm_to_bin(&line);
 
         match line_as_bin{
             Ok(bin) => binary.push(bin),
