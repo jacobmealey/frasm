@@ -5,6 +5,9 @@ MIPS assembler written in Rust
 frasm is an assembler written in Rust speicifally for the MIPs architecture. This is my first time writing anything bigger than a 
 `Hello, World!` in Rust. As of right now (Oct 2021) it is a relatively dumb assembler that is still being developed.
 
+I am building this project for the purpose of learning rust, I have done little toy examples and hello worlds but I have yet to sit down and 
+build out a project with it yet. 
+
 to see whats being worked on visit the [projects](https://github.com/jacobmealey/frasm/projects/1) page. 
 
 ## Building and Running
