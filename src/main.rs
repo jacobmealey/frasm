@@ -18,6 +18,7 @@ fn is_blank(string: &str) -> bool {
 }
 
 
+
 fn main() {
     let args: Vec<String> = env::args().collect();
     let filename = &args[1];
@@ -52,38 +53,67 @@ fn main() {
     for line in &post_stage1 {
         let split: Vec<&str> = line.split(':').collect();
         line_count = line_count + 1;
-        if split.len() > 1 {
+        if split.len() > 1 {                    // line starts with a branch
             labels.insert(split[0].trim(), line_count);
             post_stage2.push(split[1].trim());
-        } else {
+        } else {                                // Does not start with a branch
             post_stage2.push(split[0].trim());
         }
 
-        // Someway of descerning if its a function or not? maybe just 
-        // count the white space because in theory a trimmed label
-        // should have no white space
     }
     
     println!("post_stage2 len: {}", post_stage2.len());
     println!("label count: {}", labels.keys().len());
 
+    // Go through and replace all the labels.
     let mut stage_2_post_labels: Vec<String> = Vec::new();
     for label in labels.keys() {
         let rg = Regex::new(&format!(r"{}", label)).unwrap();
         let mut replaced_line: String;
         for lines in &post_stage2 {
-            // does this replace the actual line in the array or a copy of it?
             replaced_line = rg.replace(lines, labels[label].to_string()).to_string();
             println!("{}", replaced_line);
             stage_2_post_labels.push(replaced_line);
         }
     }
 
-    //for line in &post_stage2 {
-    //    println!("{}", line);
-    //}
     // stage 3 -- convert symbolic registers to integer values (no dollar signs)
-
+    // first thing we want to do is filter out any $ before the register 
+    // second we want to convert any of the symbolic names to the decimal value
+    let registersLookUp: HashMap<&str, u32> = [
+        ("zero", 0),
+        ("at", 1),
+        ("v0", 2),
+        ("v1", 3),
+        ("a0", 4),
+        ("a1", 5),
+        ("a2", 6),
+        ("a3", 7),
+        ("t0", 8),
+        ("t1", 9),
+        ("t2", 10),
+        ("t3", 11),
+        ("t4", 12),
+        ("t5", 13),
+        ("t6", 14),
+        ("t7", 15),
+        ("s0", 16),
+        ("s1", 17),
+        ("s2", 18),
+        ("s3", 19),
+        ("s4", 20),
+        ("s5", 21),
+        ("s6", 22),
+        ("s7", 23),
+        ("t8", 24),
+        ("t9", 25),
+        ("k0", 26),
+        ("k1", 27),
+        ("gp", 28),
+        ("sp", 29),
+        ("fp", 30),
+        ("ra", 31),
+    ].iter().cloned().collect();
     // This is for already processed lines. not lines can have comments
     // no lines can have symbolic names 
     // valid lines:
@@ -112,6 +142,6 @@ fn main() {
     }
 
     for bin in binary {
-        println!("{}", bin);
+        println!("{:#010x}", bin);
     }
 }

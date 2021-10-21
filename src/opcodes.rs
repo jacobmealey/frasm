@@ -77,8 +77,8 @@ pub static R_FUNCS: &'static [(&str, u32)]  = &[
     ("divu", 27),
     ("add", 32),
     ("addu", 33),
-    ("div", 34),
-    ("divu", 35),
+    ("sub", 34),
+    ("subu", 35),
     ("and", 36),
     ("or", 37),
     ("xor", 38),
@@ -103,7 +103,7 @@ pub fn asm_to_bin(string: &str) -> Result<u32, i32> {
 
     // Check if split line is an i type op-code
     if i_format.get(split_line[0]) != None {
-        println!("{} is I format", split_line[0]);
+        //println!("{} is I format", split_line[0]);
         let opcode: u32 = *i_format.get(split_line[0]).unwrap();
         let rs: u32 = split_line[1].parse().unwrap();
         let rt: u32 = split_line[2].parse().unwrap();

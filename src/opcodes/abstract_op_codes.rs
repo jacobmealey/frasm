@@ -62,7 +62,7 @@ impl Immediate {
         bin |= (self.op & 63) << 26;
         bin |= (self.rs & 31) << 21;
         bin |= (self.rt & 31) << 16;
-        bin |= self.i & 65535;
+        bin |= self.i & 32767;
         return bin;
     }
 
