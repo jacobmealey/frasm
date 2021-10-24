@@ -119,7 +119,7 @@ fn main() {
         let mut new_line = line.clone().to_owned();
         for key in register_look_up.keys() {
             let rg = Regex::new(&format!(r"{}", key)).unwrap();
-            let replace = rg.replace(&new_line[..], register_look_up[key].to_string());
+            let replace = rg.replace_all(&new_line[..], register_look_up[key].to_string());
             new_line = replace.to_string();
         }
         println!("{} --> {}", line, new_line);
