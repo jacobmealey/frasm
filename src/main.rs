@@ -80,7 +80,7 @@ fn main() {
     // stage 3 -- convert symbolic registers to integer values (no dollar signs)
     // first thing we want to do is filter out any $ before the register 
     // second we want to convert any of the symbolic names to the decimal value
-    let registersLookUp: HashMap<&str, u32> = [
+    let register_look_up: HashMap<&str, u32> = [
         ("zero", 0),
         ("at", 1),
         ("v0", 2),
@@ -114,6 +114,18 @@ fn main() {
         ("fp", 30),
         ("ra", 31),
     ].iter().cloned().collect();
+    let mut stage_3_lines: Vec<String> = Vec::new();
+    for line in &stage_2_post_labels{
+        let mut new_line = line.clone().to_owned();
+        for key in register_look_up.keys() {
+            let rg = Regex::new(&format!(r"{}", key)).unwrap();
+            let replace = rg.replace(&new_line[..], register_look_up[key].to_string());
+            new_line = replace.to_string();
+        }
+        println!("{} --> {}", line, new_line);
+        stage_3_lines.push(new_line);
+
+    }
     // This is for already processed lines. not lines can have comments
     // no lines can have symbolic names 
     // valid lines:
@@ -122,7 +134,7 @@ fn main() {
     // it would be the calcalated immediate value
     // invalid lines:
     //      add $t0 $v1 $v2 # adding or something
-    for line in stage_2_post_labels{
+    for line in stage_3_lines{
         line_count += 1;
         let line_as_bin = opcodes::asm_to_bin(&line);
 

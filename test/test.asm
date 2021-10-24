@@ -4,6 +4,6 @@ div 3 1 4
 add 3 1 2
 BRANCH: add 1 3 4 
 
-div 3 1 4
+div v1 1 4
 
 beq 3 3 BRANCH
